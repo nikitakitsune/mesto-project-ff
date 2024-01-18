@@ -11,7 +11,6 @@
 function deleteCard(evt) {
     const card = evt.target.parentElement
     const cardsList = document.querySelector('.places__list');
-    console.log(card)
     cardsList.removeChild(card)
 }
 
