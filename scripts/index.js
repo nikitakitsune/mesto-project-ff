@@ -4,10 +4,16 @@
 
 // @todo: Функция создания карточки ✓
 
-// @todo: Функция удаления карточки
+// @todo: Функция удаления карточки ✓
 
 // @todo: Вывести карточки на страницу ✓
 
+function deleteCard(evt) {
+    const card = evt.target.parentElement
+    const cardsList = document.querySelector('.places__list');
+    console.log(card)
+    cardsList.removeChild(card)
+}
 
 function createCard(name, link) {
     const cardsList = document.querySelector('.places__list');
@@ -17,6 +23,7 @@ function createCard(name, link) {
     card.querySelector('.card__title').textContent = name;
     card.querySelector('.card__image').alt = name;
     card.querySelector('.card__image').src = link;
+    card.querySelector('.card__delete-button').addEventListener('click', (evt) => deleteCard(evt))
 
     cardsList.append(card)
 }
