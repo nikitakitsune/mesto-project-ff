@@ -1,3 +1,4 @@
+import '../pages/index.css';
 const cardsList = document.querySelector('.places__list');
 
 // Ф-ия удаления карточки мест
