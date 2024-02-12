@@ -10,6 +10,9 @@ const newCardButton = document.querySelector(".profile__add-button");
 const editModal = document.querySelector(".popup_type_edit");
 const newCardModal = document.querySelector(".popup_type_new-card");
 const imageModal = document.querySelector(".popup_type_image");
+// Edit form
+
+console.log(document.forms);
 
 // Create cards from array
 initialCards.forEach(function (item) {
@@ -33,6 +36,13 @@ const addCloseEvent = (el) => {
       closeModal(el);
     }
   });
+
+  // Close by Escape key
+  document.addEventListener("keydown", (evt) => {
+    if (evt.key === "Escape") {
+      closeModal(el);
+    }
+  });
 };
 
 // Adding a close function to each modals
@@ -40,8 +50,12 @@ const addCloseEvent = (el) => {
 
 // Likes functional
 cardsList.addEventListener("click", function (evt) {
-  const target = evt.target.classList
+  const { classList: target } = evt.target;
   if (target.contains("card__like-button")) {
-    target.add('card__like-button_is-active')
+    if (target.contains("card__like-button_is-active")) {
+      target.remove("card__like-button_is-active");
+    } else {
+      target.add("card__like-button_is-active");
+    }
   }
 });
