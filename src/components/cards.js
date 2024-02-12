@@ -34,7 +34,7 @@ const deleteCard = (evt) => {
 };
 
 // Create card function
-function createCard(name, link, deleteCard) {
+function createCard(name, link, deleteCard, likeFunction, openFunction) {
   const cardTemplate = document.querySelector("#card-template").content;
   const card = cardTemplate.cloneNode(true);
   const cardImage = card.querySelector(".card__image");
@@ -46,6 +46,12 @@ function createCard(name, link, deleteCard) {
     .querySelector(".card__delete-button")
     .addEventListener("click", (evt) => deleteCard(evt));
 
+  card
+    .querySelector(".card__like-button")
+    .addEventListener("click", (evt) => likeFunction(evt));
+  card
+    .querySelector(".card__image")
+    .addEventListener("click", (evt) => openFunction(evt));
   return card;
 }
 
