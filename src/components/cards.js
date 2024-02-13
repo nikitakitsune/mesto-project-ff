@@ -27,6 +27,12 @@ const initialCards = [
 
 const cardsList = document.querySelector(".places__list");
 
+// Likes functional
+const likeCard = (evt) => {
+  const { classList: target } = evt.target;
+  target.toggle("card__like-button_is-active");
+};
+
 // Delete card function
 const deleteCard = (evt) => {
   const card = evt.target.closest(".places__item.card");
@@ -44,15 +50,14 @@ function createCard(name, link, deleteCard, likeFunction, openFunction) {
   cardImage.src = link;
   card
     .querySelector(".card__delete-button")
-    .addEventListener("click", (evt) => deleteCard(evt));
+    .addEventListener("click", deleteCard);
 
   card
     .querySelector(".card__like-button")
-    .addEventListener("click", (evt) => likeFunction(evt));
-  card
-    .querySelector(".card__image")
-    .addEventListener("click", (evt) => openFunction(evt));
+    .addEventListener("click", likeFunction);
+  cardImage.addEventListener("click", openFunction);
+
   return card;
 }
 
-export { initialCards, createCard, deleteCard };
+export { initialCards, createCard, deleteCard, likeCard };
