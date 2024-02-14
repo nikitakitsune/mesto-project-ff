@@ -33,7 +33,6 @@ const openImage = (evt) => {
     popupImage.alt = evt.target.alt;
     popupCaption.textContent = evt.target.alt;
     openModal(imageModal);
-    document.addEventListener("keydown", handleEscape);
   }
 };
 
@@ -45,23 +44,14 @@ initialCards.forEach(function (item) {
 });
 
 // Open modals
-function handleEscape(evt) {
-  if (evt.key === "Escape") {
-    const openedPopup = document.querySelector(".popup_is-opened");
-    closeModal(openedPopup);
-  }
-}
-
 editButton.addEventListener("click", function () {
   openModal(editModal);
-  document.addEventListener("keydown", handleEscape);
   nameInput.value = nameElem.textContent;
   jobInput.value = jobElem.textContent;
 });
 
 newCardButton.addEventListener("click", function () {
   openModal(newCardModal);
-  document.addEventListener("keydown", handleEscape);
 });
 
 // Modal Close
@@ -69,8 +59,6 @@ editModal.addEventListener("click", (evt) => {
   const { classList: target } = evt.target;
   if (target.contains("popup__close") || target.contains("popup")) {
     closeModal(editModal);
-    profileForm.reset();
-    document.removeEventListener("keydown", handleEscape);
   }
 });
 
@@ -78,8 +66,6 @@ newCardModal.addEventListener("click", (evt) => {
   const { classList: target } = evt.target;
   if (target.contains("popup__close") || target.contains("popup")) {
     closeModal(newCardModal);
-    newCardForm.reset();
-    document.removeEventListener("keydown", handleEscape);
   }
 });
 
@@ -87,13 +73,8 @@ imageModal.addEventListener("click", (evt) => {
   const { classList: target } = evt.target;
   if (target.contains("popup__close") || target.contains("popup")) {
     closeModal(imageModal);
-    document.removeEventListener("keydown", handleEscape);
   }
 });
-
-// Default value for inputs in edit form
-nameInput.value = nameElem.textContent;
-jobInput.value = jobElem.textContent;
 
 // Edit form
 function handleEditFormSubmit(evt) {

@@ -53,6 +53,7 @@ trim_trailing_whitespace = true # Possible values - true, false (Denotes whether
 
 indent_size = 2 # Possible values - an integer, tab (Indentation size in single-spaced characters)
 
+indent_style = space
 
 # <-->
 [*.{js,jsm,cjs,jsx,ts,tsx}] # below is the content for JS fyles
