@@ -1,46 +1,57 @@
-const initialCards = [
-  {
-    name: "Архыз",
-    link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/arkhyz.jpg",
-  },
-  {
-    name: "Челябинская область",
-    link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/chelyabinsk-oblast.jpg",
-  },
-  {
-    name: "Иваново",
-    link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/ivanovo.jpg",
-  },
-  {
-    name: "Камчатка",
-    link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/kamchatka.jpg",
-  },
-  {
-    name: "Холмогорский район",
-    link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/kholmogorsky-rayon.jpg",
-  },
-  {
-    name: "Байкал",
-    link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/baikal.jpg",
-  },
-];
-
 const cardsList = document.querySelector(".places__list");
 
+import { deleteCardFromServer, likeCardOnServer } from "./api";
+
 // Likes functional
-const likeCard = (evt) => {
-  const { classList: target } = evt.target;
-  target.toggle("card__like-button_is-active");
+export const likeCard = (evt, cardId, isLiked) => {
+  const likeButton = evt.target;
+  const likeCounter = likeButton
+    .closest(".card")
+    .querySelector(".card__likes-counter");
+
+  if (likeButton.classList.contains("card__like-button_is-active")) {
+    likeCardOnServer(cardId, true)
+      .then((res) => {
+        likeButton.classList.remove("card__like-button_is-active");
+        likeCounter.textContent = res.likes.length;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  } else {
+    likeCardOnServer(cardId, false)
+      .then((res) => {
+        likeButton.classList.add("card__like-button_is-active");
+        likeCounter.textContent = res.likes.length;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
 };
 
 // Delete card function
-const deleteCard = (evt) => {
+export const deleteCard = (evt, cardId) => {
   const card = evt.target.closest(".places__item.card");
-  cardsList.removeChild(card);
+  deleteCardFromServer(cardId)
+    .then(cardsList.removeChild(card))
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
 // Create card function
-function createCard(name, link, deleteCard, likeFunction, openFunction) {
+export const createCard = (
+  cardId,
+  name,
+  link,
+  likes,
+  deleteCard,
+  likeFunction,
+  openFunction,
+  isRemovable,
+  isLiked
+) => {
   const cardTemplate = document.querySelector("#card-template").content;
   const card = cardTemplate.cloneNode(true);
   const cardImage = card.querySelector(".card__image");
@@ -48,16 +59,33 @@ function createCard(name, link, deleteCard, likeFunction, openFunction) {
   card.querySelector(".card__title").textContent = name;
   cardImage.alt = name;
   cardImage.src = link;
-  card
-    .querySelector(".card__delete-button")
-    .addEventListener("click", deleteCard);
+
+  card.querySelector(".card__likes-counter").textContent = likes;
+
+  if (isRemovable) {
+    card
+      .querySelector(".card__delete-button")
+      .addEventListener("click", (evt) => deleteCard(evt, cardId));
+    card.querySelector(".card__delete-button").style.display = "block";
+  } else {
+    card.querySelector(".card__delete-button").style.display = "none";
+  }
+
+  if (isLiked) {
+    card
+      .querySelector(".card__like-button")
+      .classList.add("card__like-button_is-active");
+  } else {
+    card
+      .querySelector(".card__like-button")
+      .classList.remove("card__like-button_is-active");
+  }
 
   card
     .querySelector(".card__like-button")
-    .addEventListener("click", likeFunction);
+    .addEventListener("click", (evt) => likeFunction(evt, cardId, isLiked));
+
   cardImage.addEventListener("click", openFunction);
 
   return card;
-}
-
-export { initialCards, createCard, deleteCard, likeCard };
+};
