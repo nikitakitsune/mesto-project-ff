@@ -17,7 +17,7 @@ const hideInputError = (formElement, inputElement, config) => {
 // Function to check if input is valid
 const checkInputValidity = (formElement, inputElement, config) => {
   if (!inputElement.validity.valid) {
-    if (inputElement.classList.contains("popup__input_type_name")) {
+    if (inputElement.classList.contains(config.inputNameClass)) {
       showInputError(
         formElement,
         inputElement,

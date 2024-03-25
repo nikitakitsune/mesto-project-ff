@@ -46,27 +46,25 @@ const validationConfig = {
   inputSelector: ".popup__input",
   submitButtonSelector: ".popup__button",
   inactiveButtonClass: "popup__button_inactive",
+  inputNameClass: "popup__input_type_name",
   inputErrorClass: "popup__input_type_error",
   errorClass: "popup__error_visible",
 };
 
-import {
-  enableValidation,
-  clearValidation,
-  toggleButtonState,
-} from "./validation.js";
+import { enableValidation, clearValidation } from "./validation.js";
 
 // Enable validation
 enableValidation(validationConfig);
 
 Promise.all([getUserInfo(), getInitialCards()])
   .then(([userData, cards]) => {
+    console.log(cards, userData);
     avatar.style.backgroundImage = `url(${userData.avatar})`;
     nameElem.textContent = userData.name;
     jobElem.textContent = userData.about;
     userId = userData._id;
 
-    cards.forEach(function (item) {
+    cards.forEach((item) => {
       const isLiked = item.likes.some((like) => like._id === userId);
       cardsList.append(
         createCard(
@@ -153,21 +151,21 @@ function handleEditFormSubmit(evt) {
   let name;
   let about;
 
-  profileForm.querySelector(".popup__button").textContent = "Сохранение...";
+  evt.submitter.textContent = "Сохранение...";
 
   // Update user info on server and update DOM
   updateUserInfo(nameInput.value, jobInput.value)
     .then((res) => {
       name = res.name;
       about = res.about;
+      nameElem.textContent = name;
+      jobElem.textContent = about;
+      closeModal(editModal);
     })
     .catch((err) => {
       console.log(err);
     })
     .finally(() => {
-      nameElem.textContent = name;
-      jobElem.textContent = about;
-      closeModal(editModal);
       profileForm.querySelector(".popup__button").textContent = "Сохранить";
     });
 }
@@ -175,22 +173,19 @@ function handleEditFormSubmit(evt) {
 // Avatar form submit
 function handleAvatarFormSubmit(evt) {
   evt.preventDefault();
-  let image;
-
-  avatarForm.querySelector(".popup__button").textContent = "Сохранение...";
+  evt.submitter.textContent = "Сохранение...";
 
   // Update avatar on server and update DOM
   updateAvatar(avatarInput.value)
     .then((res) => {
-      image = `url(${res.avatar})`;
+      avatar.style.backgroundImage = `url(${res.avatar})`;
+      closeModal(editAvatarModal);
+      avatarForm.reset();
     })
     .catch((err) => {
       console.log(err);
     })
     .finally(() => {
-      avatar.style.backgroundImage = image;
-      closeModal(editAvatarModal);
-      avatarForm.reset();
       avatarForm.querySelector(".popup__button").textContent = "Сохранить";
     });
 }
@@ -204,7 +199,7 @@ profileForm.addEventListener("submit", handleEditFormSubmit);
 // Add new card
 newCardForm.addEventListener("submit", (evt) => {
   evt.preventDefault();
-  newCardForm.querySelector(".popup__button").textContent = "Создание...";
+  evt.submitter.textContent = "Создание...";
 
   // Add card to server and update DOM
   addCard(titleInput.value, urlInput.value)
@@ -223,13 +218,13 @@ newCardForm.addEventListener("submit", (evt) => {
           isLiked
         )
       );
+      closeModal(newCardModal);
+      newCardForm.reset();
     })
     .catch((err) => {
       console.log(err);
     })
     .finally(() => {
-      closeModal(newCardModal);
-      newCardForm.reset();
       newCardForm.querySelector(".popup__button").textContent = "Создать";
     });
 });
